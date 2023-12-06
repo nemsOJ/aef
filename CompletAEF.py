@@ -1,43 +1,45 @@
 
-def IsComplete(aef):
+def IsComplete(all_mat):
 	#verifie if a graphe is complete
-    #aef is our graph
+    #all_mat is our graph
     #return a bollean
 	
-	path = aef[2]
+	M = all_mat[2]
 
-	for i in range(len(path)):   # verifie if element in path is empty
+	for i in range(len(M)):   # verifie if element in M is empty
 		for j in range(len([i])):
-			if len(path[i][j])==0:
+			if len(M[i][j])==0:
 				return False  #if  a element is empty that's mean graph is not complete
 	return True
 
-def MakeComplete(aef): #make a graph complete
-	#aef is our graph
+def MakeComplete(all_mat): #make a graph complete
+	#all_mat is our graph
 	#return a new graph
     
-	NodesList = aef[0]
-	path = aef[2]
+	NodesList = all_mat[0]
+	M = all_mat[2]
 
-	if IsComplete(aef):   #if graph is complete do nothing 
-		return aef
+	if IsComplete(all_mat):   #if graph is complete do nothing 
+		return all_mat
 
 	NodesList.append("NodeToCompleteAutomate")    #add a final node in the node list (representing new node)
 	ind=len(NodesList) - 1
 
 	addline=[]
-	for k in range(len(path[0])):  #create a new empty line 
+	for k in range(len(M[0])):  #create a new empty line 
 		addline.append([])       
 	
-	path.append(addline)   #add the empty line in path
+	M.append(addline)   #add the empty line in M
 
-	for i in range(len(path)):
-		for j in range(len(path[i])):    #if a connection doesn't exist connect to NodeToCompleteAutomate
-			if len(path[i][j])==0:
-				path[i][j].append(ind)
+	for i in range(len(M)):
+		for j in range(len(M[i])):    #if a connection doesn't exist connect to NodeToCompleteAutomate
+			if len(M[i][j])==0:
+				M[i][j].append(ind)
 
 	
-	aef[0]=NodesList
-	aef[2]=path
+	all_mat[0]=NodesList
+	all_mat[2]=M
 
-	return aef
+	return [all_mat]
+
+
