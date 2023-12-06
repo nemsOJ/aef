@@ -1,64 +1,47 @@
-#a faire :
-#gestion des erreur doublon ou input invalid dans inputnodes et inputsymbols
-#gestion des ,, dans inputnodes,symbols et transitions
-#est ce genant que des node et des symbols est le meme blaze ??c non 
-#est ce genant que deux noeuds est le meme blaze #################
-# si deux meme symboles enlever les doublons
-#gestion des , et ; en fin de saisi 
-#ou on gere les doublon ? direct en input ou dans la matrice direct?
-#symbol ou noeud vide interdit ??????????? pour reconnaissance language peut poser probleme
-#pour l'instant on enleve les doublons et exit si pb
-#noeud ou symbols interdits
-
-def PrintMatriceOfLists(M):   #si M n'est pas de bonne nature ? nique en vrai c'est que du visuel le temps de tester
-    for i in range(len(M)):
-        print(M[i])
-
 def RemoveDuplicates(list):
-    temp=list
-    list=[]
-    for elt in temp:                 #remove duplicates
-        if elt not in list:
-            list.append(elt)
+    newList=[]
+    for element in list:                 #remove duplicates
+        if element not in newList:
+            newList.append(element)
     
-    return list
+    return newList
 
-def TransitionValid(transition,NodesList,SymbolsList):
+def TransitionValid(pathList,nodes,symbols):
 
-    list=transition.split(",")
+    list=pathList.split(",")
 
-    if list[0] not in NodesList:
+    if list[0] not in nodes:
         return False
     
-    if list[-1] not in NodesList:
+    if list[-1] not in nodes:
         return False
     
     for i in range(len(list)-2):
-        if list[i+1] not in SymbolsList:
+        if list[i+1] not in symbols:
             return False
         
     return True
 
-def index(elt,list):  
+def index(element,list):  
 
     for i in range(len(list)):
-        if elt == list[i]:
+        if element == list[i]:
             n = i
             return n
         
-    if elt not in list:
+    if element not in list:
         exit(54)
 
 def MatriceOfLists(rowsNb,columsNb):
 
-    M=[]
+    emptyPath=[]
     for i in range(rowsNb):
         row=[]
         for j in range(columsNb):
             row.append([])
-        M.append(row)
+        emptyPath.append(row)
 
-    return M
+    return emptyPath
 
 def isStartingNode(node):
 
@@ -80,96 +63,90 @@ def isFinalNode(node):
 
 def InputNodes():
 
-    nbfn = 0    #nbfn is number of final nodes  
-    nbin = 0    #nbin in number of initial node 
+    nbEndingNode = 0    #nbEndingNode is number of final nodes  
+    nbBeginningNode = 0    #nbBeginningNode in number of initial node 
     print("Enter nodes :")
-    Nodes = input()
+    allNodes = input()
 
-    NodesList=Nodes.split(",")
+    nodeList=allNodes.split(",")
 
-    for i in range (len(NodesList)):     #check node validity
-        if ";" in NodesList[i]:
-            print("Error, the node :",NodesList[i],"can't countain ';' character")
+    for i in range (len(nodeList)):     #check node validity
+        if ";" in nodeList[i]:
+            print("Error, the node :",nodeList[i],"can't countain ';' character")
             exit()
     
-    NodesList=RemoveDuplicates(NodesList)
+    nodeList=RemoveDuplicates(nodeList)
 
     node=""
-    for j in range(len(NodesList)):   #counting number of final nodes
-        node=NodesList[j]
+    for j in range(len(nodeList)):   #counting number of final nodeList
+        node=nodeList[j]
         if node[0] == "#":
-            nbfn += 1
+            nbEndingNode += 1
     
-    if nbfn == 0 :
+    if nbEndingNode == 0 :
         print("Error : no final node")   #error if no final node
         exit()
 
     node=""
-    for j in range(len(NodesList)):   #counting number of initial nodes
-        node=NodesList[j]
+    for j in range(len(nodeList)):   #counting number of initial nodeList
+        node=nodeList[j]
         if node[0] == "@":
-            nbin += 1
+            nbBeginningNode += 1
     
-    if nbin == 0 :
+    if nbBeginningNode == 0 :
         print("Error : no starting node")   #error if no initial node
         exit()
 
-    return NodesList
+    return nodeList
 
 def InputSymbols():      
  
     print("Enter Symbols :")
-    Symbols = input()
+    allSymbols = input()
 
-    SymbolsList=Symbols.split(",")
+    symbolsList=allSymbols.split(",")
 
-    for i in range (len(SymbolsList)):     #check Symbols validity
-        if ";" in SymbolsList[i]:
-            print("Error, the Symbol :",SymbolsList[i],"can't countain ';' character")
+    for i in range (len(symbolsList)):     #check symbolsList validity
+        if ";" in symbolsList[i]:
+            print("Error, the Symbol :",symbolsList[i],"can't countain ';' character")
             exit()
 
-    SymbolsList=RemoveDuplicates(SymbolsList)
+    symbolsList=RemoveDuplicates(symbolsList)
 
-    return SymbolsList
+    return symbolsList
 
-def InputTransition(NodesList,SymbolsList):    #gerer les a,s,s,s,s,s,s,s,a
+def InputTransition(nodes,symbols):    #gerer les a,s,s,s,s,s,s,s,a
     
-    print("Enter transitions :")
-    Transitions = input()
+    print("Enter pathList :")
+    allPath = input()
 
-    TransitionsList=Transitions.split(";")
+    pathList=allPath.split(";")
 
-    for i in range(len(TransitionsList)):
-        if not TransitionValid(TransitionsList[i],NodesList,SymbolsList):
-            print("Error :",TransitionsList[i],"is not a valid transition")   #############
+    for i in range(len(pathList)):
+        if not TransitionValid(pathList[i],nodes,symbols):
+            print("Error :",pathList[i],"is not a valid transition")   #############
             exit()
     
-    
-    
-    
-    TransitionsList=RemoveDuplicates(TransitionsList)
+    pathList=RemoveDuplicates(pathList)
         #gerer les a,s,s,s,s,s,s,a et supprimer les transition equivalentes ex: a,s,d,a et a,d,s,a  (les bibliotheques seraient utiles)
 
-
-
-
-    return TransitionsList
+    return pathList
     
-def TranslateInputsIntoMatrix(NodesList,SymbolsList,TransitionsList):
+def TranslateInputsIntoMatrix(nodes,symbols,allPath):
 
-    M = MatriceOfLists(len(NodesList),len(SymbolsList))
+    M = MatriceOfLists(len(nodes),len(symbols))
 
-    for i in range(len(TransitionsList)):
-        transition=TransitionsList[i].split(",")
-        isn=index(transition[0],NodesList)
-        ifn=index(transition[-1],NodesList)
+    for i in range(len(pathList)):
+        pathList=allPath[i].split(",")
+        indexStartingNode=index(pathList[0],nodes)
+        indexFinalNode=index(pathList[-1],nodes)
               
-        SList=transition[1:-1]
-        SList=RemoveDuplicates(SList)    #a voir avec comment on gere les doublon...
+        symbols=pathList[1:-1]
+        symbols=RemoveDuplicates(symbols)    #a voir avec comment on gere les doublon...
 
-        for j in range(len(SList)):
-            x=index(SList[j],SymbolsList)
-            M[isn][x].append(ifn)
+        for j in range(len(symbols)):
+            x=index(symbols[j],symbols)
+            M[indexStartingNode][x].append(indexFinalNode)
 
     return M
 
@@ -178,16 +155,17 @@ def CreateAEF():
     nodes = InputNodes()
     symbols = InputSymbols()
     transitions = InputTransition(nodes,symbols)
-    M = TranslateInputsIntoMatrix(nodes,symbols,transitions)
+    path = TranslateInputsIntoMatrix(nodes,symbols,transitions)
 
-    all_mat=[nodes,symbols,M]
+    aef=[nodes,symbols,path]
 
-    return all_mat 
+    return aef 
 
 
-
+'''Test
 AEF = CreateAEF()
 
 print(AEF[0])
 print(AEF[1])
 print(AEF[2])
+'''
