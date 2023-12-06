@@ -10,7 +10,7 @@ def makeComplement(aef) :
 
     # Make the given AEF determinist and complete
     aef = makeDeterministAef(aef)
-    aef = MakeComplete(aef)
+    aef = makeComplete(aef)
 
     newNodes = []
     nodes = ''
@@ -42,7 +42,7 @@ def makeMiror(aef) :
 
     # Make the given AEF determinist and complete
     aef = makeDeterministAef(aef)
-    aef = MakeComplete(aef)
+    aef = makeComplete(aef)
 
     newAef = [[], aef[1], []]
     node = ''
@@ -108,9 +108,9 @@ def mutliplyAef(aef1, aef2) :
 
     # Make the given AEF determinists and completes
     aef1 = makeDeterministAef(aef1)
-    aef1 = MakeComplete(aef1)
+    aef1 = makeComplete(aef1)
     aef2 = makeDeterministAef(aef2)
-    aef2 = MakeComplete(aef2)
+    aef2 = makeComplete(aef2)
 
     newAef = [[], [], []]
 
@@ -175,9 +175,9 @@ def concatenateAef(aef1, aef2) :
 
     # Make the given AEF determinists and completes
     aef1 = makeDeterministAef(aef1)
-    aef1 = MakeComplete(aef1)
+    aef1 = makeComplete(aef1)
     aef2 = makeDeterministAef(aef2)
-    aef2 = MakeComplete(aef2)
+    aef2 = makeComplete(aef2)
 
     newAef = [[], [], []]
 
