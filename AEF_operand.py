@@ -9,7 +9,7 @@ def makeComplement(aef) :
     # Returns a 3 dimensional list (corresponding to an AEF).
 
     # Make the given AEF determinist and complete
-    aef = tradDeter(aef)
+    aef = makeDeterministAef(aef)
     aef = MakeComplete(aef)
 
     newNodes = []
@@ -41,7 +41,7 @@ def makeMiror(aef) :
     # Returns a 3 dimensional list (corresponding to an AEF).
 
     # Make the given AEF determinist and complete
-    aef = tradDeter(aef)
+    aef = makeDeterministAef(aef)
     aef = MakeComplete(aef)
 
     newAef = [[], aef[1], []]
@@ -107,9 +107,9 @@ def mutliplyAef(aef1, aef2) :
     # Returns a 3 dimensional list (corresponding to an AEF).
 
     # Make the given AEF determinists and completes
-    aef1 = tradDeter(aef1)
+    aef1 = makeDeterministAef(aef1)
     aef1 = MakeComplete(aef1)
-    aef2 = tradDeter(aef2)
+    aef2 = makeDeterministAef(aef2)
     aef2 = MakeComplete(aef2)
 
     newAef = [[], [], []]
@@ -174,9 +174,9 @@ def concatenateAef(aef1, aef2) :
     # Returns a 3 dimensional list (corresponding to an AEF).
 
     # Make the given AEF determinists and completes
-    aef1 = tradDeter(aef1)
+    aef1 = makeDeterministAef(aef1)
     aef1 = MakeComplete(aef1)
-    aef2 = tradDeter(aef2)
+    aef2 = makeDeterministAef(aef2)
     aef2 = MakeComplete(aef2)
 
     newAef = [[], [], []]
