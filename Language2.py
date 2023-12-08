@@ -1,22 +1,16 @@
-NodeList=['@q0','q1','#q2']
-SymbolList=['a','b','c']
-M=[[[2],[1],[0]],[[2],[1],[0]],[[0],[1],[2]]]
-AEF=[NodeList,SymbolList,M]
-
-
 #we could upgrade list of operations and make simplifications on the coefficients of the systeme
 
 def addParenthesisToSymbols(symbols):
 
-    new_list=[]
+    newSymbols=[]
 
     for symbol in symbols:
         if len(symbol) > 1 :
-            new_list.append('('+symbol+')')
+            newSymbols.append('('+symbol+')')
         else:
-            new_list.append(symbol)
+            newSymbols.append(symbol)
 
-    return new_list
+    return newSymbols
 
 def systemeOfNodesLanguages(AEF):
     #supposing AEF is determinist
@@ -25,134 +19,135 @@ def systemeOfNodesLanguages(AEF):
     nodes=AEF[0]
     symbols=AEF[1]
     symbols=addParenthesisToSymbols(symbols)
-    mat=AEF[2]
-    L=len(nodes)
+    path=AEF[2]
+    nbNodes=len(nodes)
 
-    S={}
-    for i in range(L):    #initializing a linear systeme of L equation of L parameters
+    system={}
+    for i in range(nbNodes):    #initializing a linear systeme of nbNodes equation of nbNodes parameters
         
-        B={'Cst' : ''}
-        for j in range(L):
-            B['L'+str(j)]=''
+        coefSystem={'Cst' : ''}
+        for j in range(nbNodes):
+            coefSystem['L'+str(j)]=''
         
-        S['BL'+str(i)]=B
+        system['BL'+str(i)]=coefSystem
 
+    for i in range(len(path)):   #walkthrough path and update system
+        for j in range(len(path[i])):
+            if len(path[i][j])==1: #supposing AEF is determinist
+                system['BL'+str(i)]['L'+str(path[i][j][0])]+=symbols[j]+'+'
 
-    for i in range(len(mat)):   #walkthrough mat and update S
-        for j in range(len(mat[i])):
-            if len(mat[i][j])==1: #supposing AEF is determinist
-                S['BL'+str(i)]['L'+str(mat[i][j][0])]+=symbols[j]+'+'
+    for key, equation in system.items():   #walkthrough system and correcting previous values by deleting '+' and adding '()'
+        print(equation)
+        for keyCoef, coef in equation.items():
+            equation[keyCoef]=coef[:-1]    
+            if len(equation[keyCoef]) > 1 and (equation[keyCoef][0] != '(' or equation[keyCoef][-1] != ')'):  #todo only if coef[-1]=='+'
+                equation[keyCoef]='('+coef[:-1]+')'
 
-          
-         
-    for key, BL in S.items():   #walkthrough S and correcting previous values by deleting '+' and adding '()'
-        for key_BL, elt in BL.items():
-            BL[key_BL]=elt[:-1]    
-            if len(BL[key_BL]) > 1 and (BL[key_BL][0] != '(' or BL[key_BL][-1] != ')'):  #todo only if elt[-1]=='+'
-                BL[key_BL]='('+elt[:-1]+')'
+    return system
 
-    return S
+def makeSubstitution(system,op):  #a ameliorer avec des simplification de formule???? verifier les posibilités de simplification au moment ou on fait l'op
 
-S=systemeOfNodesLanguages(AEF)
-print(S)
+    opLine=op[0]
+    opCoefIndex=op[1]
 
-def makeSubstitution(S,op):  #a ameliorer avec des simplification de formule???? verifier les posibilités de simplification au moment ou on fait l'op
-
-    a=op[0]
-    b=op[1]
-    if a==b:
+    if opLine==opCoefIndex:
         exit('makeSubstitution1')
 
-    B0=S['BL'+str(a)]
-    B1=S['BL'+str(b)]
+    equation0=system['BL'+str(opLine)]
+    equation1=system['BL'+str(opCoefIndex)]
 
-    coef=B0['L'+str(b)]  #coef is the coeficient in front of the parameter that will be substitute 
-    B0['L'+str(b)]=''    #after substitution de line that take substitution do not depend anymore from the value we substitute
+    coef=equation0['L'+str(opCoefIndex)]  #coef is the coeficient in front of the parameter that will be substitute 
+    equation0['L'+str(opCoefIndex)]=''    #after substitution de line that take substitution do not depend anymore from the value we substitute
 
-    for key_B1, item in B1.items():
-        if item != '':
-            if B0[key_B1] != '':
-                B0[key_B1]='('+B0[key_B1]+'+'+coef+item+')'
+    for keyCoefEq1, coefEq1 in equation1.items():
+        if coefEq1 != '':
+            if equation0[keyCoefEq1] != '':
+                equation0[keyCoefEq1]='('+equation0[keyCoefEq1]+'+'+coef+coefEq1+')'
             else :
-                B0[key_B1]=coef+item
+                equation0[keyCoefEq1]=coef+coefEq1
 
-def noDependanceOfLn(BL):
+def noDependanceOfLn(equation):
 
-    for i in range(len(BL)-1):
-        if BL['L'+str(i)] != '':
+    for i in range(len(equation)-1):
+        if equation['L'+str(i)] != '':
             return False
         
     return True
 
-def makeLemmaOfArden(S,op):
+def makeLemmaOfArden(system,op):
 
-    a=op[0]
-    b=op[1]
-    if a!=b :
+    opLine=op[0]
+    opCoefIndex=op[1]
+    if opLine!=opCoefIndex :
         exit('makeLemmaOfArden1')
-    B=S['BL'+str(a)]
+    coefSystem=system['BL'+str(opLine)]
 
-    coef=B['L'+str(b)]        #coef is the coeficient in front of the parameter that will ardenise + the '*' sign ( aL+b = a*b )
+    coef=coefSystem['L'+str(opCoefIndex)]        #coef is the coeficient in front of the parameter that will ardenise + the '*' sign ( aL+b = a*b )
     if len(coef) > 1 and (coef[0] != '(' or coef[-1] != ')'):   #put coef to the right form for being readable
         coef='('+coef+')'+'*'  
     else:
         coef=coef+'*'
     
-    B['L'+str(b)]=''
+    coefSystem['L'+str(opCoefIndex)]=''
     done=False          #doing the lemma of arden operation
-    for key_B, item in B.items():
-        if item != '' : 
-            B[key_B]=coef+B[key_B]
-            if key_B == 'Cst':
+    for keyCoefEq, coefEq in coefSystem.items():
+        if coefEq != '' : 
+            coefSystem[keyCoefEq]=coef+coefSystem[keyCoefEq]
+            if keyCoefEq == 'Cst':
                 done=True 
 
-    if noDependanceOfLn(B) and not done:
-        B['Cst']=coef+B['Cst']
+    if noDependanceOfLn(coefSystem) and not done:
+        coefSystem['Cst']=coef+coefSystem['Cst']
 
 def tradAEFToMatrixOfRelations(AEF):
 
     nodes=AEF[0]
-    mat=AEF[2]
+    path=AEF[2]
 
     matrixOfRelations = []
 
     # Initialisation of a new 2D matrix that contains zeros
     for i in range(len(nodes)):
-        temp = [0] * len(nodes) 
-        matrixOfRelations.append(temp)
+        matrixOfRelations.append([0] * len(nodes))
     
-    for i in range(len(mat)):    #walkthrought the matrix of the AEF
-       for j in range(len(mat[i])):
-            if len(mat[i][j])!=0:
-                matrixOfRelations[i][mat[i][j][0]]=1   #supposing AEF is determinist
+    for i in range(len(path)):    #walkthrought the matrix of the AEF
+       for j in range(len(path[i])):
+            if len(path[i][j])!=0:
+                matrixOfRelations[i][path[i][j][0]]=1   #supposing AEF is determinist
      
     return matrixOfRelations
            
-def makeOperation(M,op):
+def makeOperation(matrixOfRelations,op):
     
-    a=op[0]
-    b=op[1]
+    opLine=op[0]
+    opCoefIndex=op[1]
 
-    M[a][b]=0
-    for i in range(len(M[a])):
-        if M[b][i] == 1:
-            M[a][i] = 1
+    matrixOfRelations[opLine][opCoefIndex]=0
+    for i in range(len(matrixOfRelations[opLine])):
+        if matrixOfRelations[opCoefIndex][i] == 1:
+            matrixOfRelations[opLine][i] = 1
 
-def listOfOperations(M):
+def listOfOperations(matrixOfRelations):
 
     list=[]
 
-    for i in reversed(range(len(M))):
+    for i in reversed(range(len(matrixOfRelations))):
         for j in reversed(range(i+1)):
-            if M[j][i]==1:
+            if matrixOfRelations[j][i]==1:
                 list.append([j,i])
             if j != i :
-                makeOperation(M,[j,i])
+                makeOperation(matrixOfRelations,[j,i])
 
     return list 
 
+''' Test :
+NodeList=['@q0','q1','#q2']
+SymbolList=['a','b','c']
+M=[[[2],[1],[0]],[[2],[1],[0]],[[0],[1],[2]]]
+AEF=[NodeList,SymbolList,M]
 
-    
+S=systemeOfNodesLanguages(AEF)
+print(S)
 M=tradAEFToMatrixOfRelations(AEF)
 print(M)
 L=listOfOperations(M)
@@ -172,3 +167,4 @@ for op in L :
 
 
 print(S['BL0']['Cst'])
+'''
