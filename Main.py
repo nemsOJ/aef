@@ -75,14 +75,16 @@ def main():
                 print("No AEF loaded.")
         elif choice == '9':
             if aef:
+                print("debug",aef)
                 aef = makeComplement(aef)
-                print("Complement AEF created.")
+                print("Complement AEF created.",aef)
             else:
                 print("No AEF loaded.")
         elif choice == '10':
             if aef:
                 aef = makeMiror(aef)
                 print("Mirror AEF created.")
+                print(aef)
             else:
                 print("No AEF loaded.")
         elif choice == '11':

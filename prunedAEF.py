@@ -27,7 +27,7 @@ def rendreTousLesEtatsReconnaissants(automate):
 
     return nouvel_automate
 
-# Exemple d'utilisation
+'''# Exemple d'utilisation
 automate = {
     "etats": {"q0", "q1"},
     "alphabet": {"0", "1"},
@@ -37,4 +37,4 @@ automate = {
 }
 
 nouvel_automate = rendreTousLesEtatsReconnaissants(automate)
-print(nouvel_automate)
+print(nouvel_automate)'''

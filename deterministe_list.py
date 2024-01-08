@@ -4,15 +4,14 @@ def getElementInAef(path, nodes, symbols) :
     # Return a list.
 
     newPath = []
-
     for i in nodes :
 
         if i > len(path) -1 or i < 0 : # Check existing knot
-            print('Error type in getElementInAef')
+            print('Error type in getElementInAef _ 1')
             exit(1)
 
         if symbols > len(path[i]) -1 or i < 0 : # Check existing symbol
-            print('Error type in getElementInAef')
+            print('Error type in getElementInAef _ 2',symbols)
             exit(1)
 
         for k in path[i][symbols] : # Add element to newPath
@@ -33,27 +32,22 @@ def isDeterminist(path) :
 
     return True
 
-def makeDeterministPath(path) :
-    # Make AEF determinist.
-    # path is a 3 dimensional list.
-    # Return a list.
+def makeDeterministPath(path):
+    newPath = [path[0]]
+    indexOfOldNodes = [[0]]
 
-    if isDeterminist(path): # Check if AEF is the given determinist.
-        return path
-    
-    # Declaration
-    newPath=[path[0]] # newgraph is the futur determinist graph 
-    indexOfOldNodes = [[0]] #r ecense new node of the futur determinist graph
-
-    for i in newPath :
-        for k in i :
-            if len(k) != 0 and k not in indexOfOldNodes :   # if k is not empty and k is not already a new node we add the node in indexOfOldNodes and add a line to the new matrice
-                indexOfOldNodes.append(k)      
+    for i in newPath:
+        for k in i:
+            if len(k) != 0 and k not in indexOfOldNodes:
+                indexOfOldNodes.append(k)
                 newPath.append([])
-                for j in range(len(path[2][0])):     # fill the new line of newgraph with the right elements
-                    newPath[-1].append(getElementInAef(path[2], k, j))
+                for j in range(len(path[0])):
+                    newPath[-1].append(getElementInAef(path, k, j))
+
+    print("Path Dimensions:", len(path), len(path[0]), len(path))
 
     return [newPath, indexOfOldNodes]
+
 
 def concatenateWordsToMakeDeterminist(words) :   #merge a list of word and if a word is a final node add a # in front of the merging
     isEndingNode = False

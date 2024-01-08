@@ -1,7 +1,7 @@
 from display_AEF import *
 from deterministe_list import *
 from CompletAEF import *
-from Imput2 import removeDuplicates
+from Input2 import *
 
 def makeComplement(aef) :
     # Creates a complementary AEF of the given one.
@@ -204,7 +204,7 @@ def concatenateAef(aef1, aef2) :
     for i in aef2[1] :
         newAef[1].append(i)
     newAef[1].append('') # Add the espilon node
-    newAef[1] = removeDuplicates(newAef[1])
+    newAef[1] = RemoveDuplicates(newAef[1])
     
     # Initialise newAef[2] to avoid ".append"
     for i in range(len(newAef[0])) :

@@ -102,7 +102,7 @@ def AEFRecogniseWord(all_mat):
 
 
 
-#partie test 
+'''#partie test 
 NodeList=['@fff','1','#2']
 SymbolList=['a','e','i','o','u']
 M=[[[1],[1],[1],[1],[1]],[[2],[2],[2],[2],[2]],[[2],[2],[2],[],[]]]
@@ -113,4 +113,4 @@ print(M)
 
 
 
-print(AEFRecogniseWord(AEF))
+print(AEFRecogniseWord(AEF))'''
