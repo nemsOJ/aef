@@ -37,7 +37,7 @@ def isCoAccessible(aef, nodeIndex, checkedNodes) :
     paths = aef[2]
     res = 0
 
-    if (nodes[0][nodeIndex][0] == '#' or nodes[0][nodeIndex][:2] == "@#") : # The chosen node is an ending one
+    if (nodes[nodeIndex][0] == '#' or nodes[nodeIndex][:2] == "@#") : # The chosen node is an ending one
         return 1
     
     for i in checkedNodes : # The node has already been checked
@@ -46,8 +46,9 @@ def isCoAccessible(aef, nodeIndex, checkedNodes) :
     
     for i in range(len(symbols)) : # For each arrivals nodes of nodeIndex
         for j in paths[nodeIndex][i] :
-            checkedNodes.append(nodeIndex)
-            res += isCoAccessible(aef, j, checkedNodes) # Recall the function
+            if j != nodeIndex :
+                checkedNodes.append(nodeIndex)
+                res += isCoAccessible(aef, j, checkedNodes) # Recall the function
 
     return res
 
@@ -88,6 +89,8 @@ def deleteNode(aef, nodeIndex) :
             for k in range(len(newPaths[i][j])) :
                 if newPaths[i][j][k] == nodeIndex :
                     newPaths[i][j] = removeElt(newPaths[i][j], k)
+                elif newPaths[i][j][k] > nodeIndex : # Change index of nodes, if their index is superior to nodeIndex
+                    newPaths[i][j][k] -= 1
 
     return [newNodes, symbols, newPaths]
 
@@ -101,17 +104,19 @@ def makePruned(aef) :
     symbols = aef[1]
     paths = aef[2]
     newAef = [nodes, symbols, paths]
+    nodeIndex = 0
 
-    for i in range(len(newAef[0])) :
-        if i >= len(newAef[0]) :
-            break
-        if (isCoAccessible(aef, i, []) == 0) :
-            newAef = deleteNode(aef, i)
+    while nodeIndex != len(newAef[0]) :
+        if (isCoAccessible(aef, nodeIndex, []) == 0) :
+            newAef = deleteNode(aef, nodeIndex)
+            nodeIndex -= 1
+        nodeIndex += 1
     
-    for i in range(len(newAef[0])) :
-        if i >= len(newAef[0]) :
-            break
-        if (isAccessible(aef, i, []) == 0) :
-            newAef = deleteNode(aef, i)
+    nodeIndex = 0
+    while nodeIndex != len(newAef[0]) :
+        if (isAccessible(aef, nodeIndex, []) == 0) :
+            newAef = deleteNode(aef, nodeIndex)
+            nodeIndex -= 1
+        nodeIndex += 1
 
     return newAef
