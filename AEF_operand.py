@@ -114,16 +114,27 @@ def mutliplyAef(aef1, aef2) :
 
     newAef = [[], [], []]
 
+    # Variables made to keep old coordinates
+    i1 = [] 
+    j1 = []
+    i2 = []
+    j2 = []
+
     # Get name of nodes
-    for i in aef1[0] :
-        for j in aef2[0] :
-            newAef[0].append(concatenateWordsToMultiplyAef([i, j]))
+    for i in range(len(aef1[0])) :
+        for j in range(len(aef2[0])) :
+            newAef[0].append(concatenateWordsToMultiplyAef([aef1[0][i], aef2[0][j]]))
+            i1.append(i)
+            i2.append(j)
 
     # Get name of communs symbols
     newSymbols = []
-    for i in aef1[1] :
-        if i in aef2[1] :
-            newSymbols.append(i)
+    for i in range(len(aef1[1])) :
+        for j in range(len(aef2[1])) :
+            if aef1[1][i] == aef2[1][j] :
+                newSymbols.append(i)
+                j1.append(i)
+                j2.append(j)
     newAef[1] = newSymbols
     
     # Initialise newAef[2] to avoid ".append"
@@ -136,17 +147,18 @@ def mutliplyAef(aef1, aef2) :
     for i in range(len(newAef[0])) : # For nodes
         for j in range(len(newAef[1])) : # For symboles
 
-            # Translate previous coordinates into old coordinates
-            i1 = i // (min(len(aef1[0]), len(aef2[0])) + 1)
-            i2 = i % (min(len(aef1[0]), len(aef2[0])) + 1)
-            j1 = j % len(aef1[1])
-            j2 = j // len(aef1[1])
-
             # Go though transitions of aef1 and aef2 to add the right nodes
-            for k1 in aef1[2][i1][j1] :
-                for k2 in aef2[2][i2][j2] :
-                    k = k1 * len(newAef[0]) + k2 # Translate old coordinates into previous coordinates
-                    newAef[2][i][j].append(k)
+            for k1 in aef1[2][i1[i]][j1[j]] :
+                for k2 in range(len(aef2[2])) :
+                    k = k1 * len(aef1[0]) + k2 # Translate old coordinates into previous coordinates
+                    if k not in newAef[2][i][j] :
+                        newAef[2][i][j].append(k)
+
+            for k2 in aef2[2][i2[i]][j2[j]] :
+                for k1 in range(len(aef1[2])) :
+                    k = k1 + k2 * len(aef2[0]) # Translate old coordinates into previous coordinates
+                    if k not in newAef[2][i][j] :
+                        newAef[2][i][j].append(k)
 
     return newAef
 
@@ -232,9 +244,3 @@ def concatenateAef(aef1, aef2) :
                     newAef[2][i][-1].append(len(aef1[0]) + j)
                     
     return newAef
-
-''' Tests :
-aef1 = [["Q0", "Q1"], ['S0', 'S1'], [[[0], []], [[1, 0], []]]]
-aef2 = [["1Q0", "1Q1"], ['S0', 'S1'], [[[], [0]], [[1], [0]]]]
-display(mutliplyAef(aef1, aef2))
-'''
