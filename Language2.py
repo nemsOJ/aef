@@ -1,22 +1,21 @@
-#from SimplifyRE import*
-from ReconnaissanceWorldByAEF import*
+from SimplifyRE import*
+from worldReconnaissance import*
 
 
-'''#partie test 
+#partie test 
 NodeList=['@0','1','2','3','4','5','#6','7','#8']
 SymbolList=['p','y','t','h','o','n','<','3']
 M=[[[1],[],[],[],[],[],[],[]],[[],[2],[],[],[],[],[],[]],[[],[],[3],[],[],[],[],[]],[[],[],[],[4],[],[],[],[]],[[],[],[],[],[5],[],[],[]],[[],[],[],[],[],[6],[],[]],[[],[],[],[],[],[],[7],[]],[[],[],[],[],[],[],[],[8]],[[],[],[],[],[],[],[7],[]]]
 AEF=[NodeList,SymbolList,M]
 
-
+'''
 r0=0
 for i in range(len(M)):
     for j in range(len(SymbolList)):
         r0=random.randint(1, 3)
         if r0 == 1 :
             M[i][j].append(random.randint(0,5))
-            '''
-
+'''
 
 
 def isFinalNode(node):
@@ -180,7 +179,6 @@ def regularExpression(AEF):
     listOfOp= listOfOperations(matrixOfRelations)
 
     for operation in listOfOp:
-        print(Systeme)
         a=operation[0]
         b=operation[1]
 
@@ -188,8 +186,6 @@ def regularExpression(AEF):
             makeLemmaOfArden(Systeme,operation)
         else:
             makeSubstitution(Systeme,operation)
-
-    print(Systeme)
 
     RE=Systeme['BL0']['Cst']
     #RE=simplifyRE(RE,AEF)
@@ -205,11 +201,4 @@ def language(AEF):
     return language
 
 
-'''M=tradAEFToMatrixOfRelations(AEF)
-
-print(listOfOperations(M))
-
-RE=regularExpression(AEF)
-print(RE)
-
-print(testRecogniseWord(AEF))'''
+print(regularExpression(AEF))
