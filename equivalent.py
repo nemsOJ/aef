@@ -1,6 +1,16 @@
 from deterministe_list import*
 from AEF_operand import*
 
+def copieList (tab) :
+    copy = []
+    for i in tab :
+        if type(i) == list :
+            copy.append(copieList(i))
+        else :
+            copy.append(i)
+
+    return copy
+
 def isFinalNode(node):
 
     if node[0] == '#':
@@ -48,18 +58,17 @@ def notRecogniseEmptyLanguage(aef):
                     toTreat.append(q)
         accessible.append(p)
     
-    return True
-        
+    return True      
 
 def AincludeInB(aefA, aefB):
 
-    aefB2=makeDeterministAef(aefB)
-    aefB2=makeComplement(aefB2)
-    aefC=mutliplyAef(aefA,aefB2)
+    aefB=makeDeterministAef(aefB)
+    aefB=makeComplement(aefB)
+    aefC=mutliplyAef(aefA,aefB)
 
     return notRecogniseEmptyLanguage(aefC)
 
-
 def isEquivalent(aefA, aefB):
-    
-    return AincludeInB(aefA, aefB) and AincludeInB(aefB, aefA)
+    aefA2 = copieList(aefA)
+    aefB2 = copieList(aefB)
+    return AincludeInB(aefA, aefB) and AincludeInB(aefB2, aefA2)
