@@ -1,3 +1,6 @@
+listOfForbiddenNode=['NodeToCompleteAutomate','']
+listOfForbiddenSymbols=['(',')',';','+','*']
+
 def RemoveDuplicates(list):
     newList=[]
     for element in list:                 #remove duplicates
@@ -6,7 +9,7 @@ def RemoveDuplicates(list):
     
     return newList
 
-def TransitionValid(pathList,nodes,symbols):
+def TransitionValid(pathList,nodes,symbols):   #verify transition validity 
 
     list=pathList.split(",")
 
@@ -65,7 +68,10 @@ def InputNodes():
 
     nbEndingNode = 0    #nbEndingNode is number of final nodes  
     nbBeginningNode = 0    #nbBeginningNode in number of initial node 
-    print("Enter nodes :")
+    print("Enter nodes in format : node1,node2,.....,nodeN ")
+    print("Write @node for starting nodes")
+    print("Write #node for ending nodes")
+    print("Write @#node if starting and ending node")
     allNodes = input()
 
     nodeList=allNodes.split(",")
@@ -77,21 +83,27 @@ def InputNodes():
     
     nodeList=RemoveDuplicates(nodeList)
 
-    node=""
-    for j in range(len(nodeList)):   #counting number of final nodeList
-        node=nodeList[j]
-        if node[0] == "#":
+    for node in nodeList:
+        for forbiddenNode in listOfForbiddenNode:
+            if node==forbiddenNode:
+                print('Error :',forbiddenNode ,'is a forbidden node name')
+                exit('Error input node')
+    
+
+   
+    for node in nodeList:               #counting ending node
+       if isFinalNode(node):
             nbEndingNode += 1
     
     if nbEndingNode == 0 :
         print("Error : no final node")   #error if no final node
         exit()
 
-    node=""
-    for j in range(len(nodeList)):   #counting number of initial nodeList
-        node=nodeList[j]
-        if node[0] == "@":
+    
+    for node in nodeList:               #counting starting node
+       if isStartingNode(node):
             nbBeginningNode += 1
+    
     
     if nbBeginningNode == 0 :
         print("Error : no starting node")   #error if no initial node
@@ -101,7 +113,7 @@ def InputNodes():
 
 def InputSymbols():      
  
-    print("Enter Symbols :")
+    print("Enter Symbols in format : symbol1,symbol2,....,symbolsN")
     allSymbols = input()
 
     symbolsList=allSymbols.split(",")
@@ -113,36 +125,46 @@ def InputSymbols():
 
     symbolsList=RemoveDuplicates(symbolsList)
 
+    for symbol in symbolsList:
+        for forbiddenSymbol in listOfForbiddenSymbols:
+            if forbiddenSymbol in symbol:
+                print("Error, the Symbol :",symbol,"can't countain",forbiddenSymbol,"character")
+                exit('Error in input symbol')
+
+    if '' in symbolsList:
+        print('Error : empty symbol is not accepted, ε symbo correspond to empty symbol')
+        exit('Error in input symbol')
+
     return symbolsList
 
-def InputTransition(nodes,symbols):    #gerer les a,s,s,s,s,s,s,s,a
+def InputTransition(nodes,symbols):   
     
-    print("Enter pathList :")
+    print("Enter pathList in fromat : ")
+    print("startingnode1,symbol1,symbole2,.....,symboleN,arrivalNode1;startingnode2,s1,s2,....,arrivalnode2;......")
     allPath = input()
 
     pathList=allPath.split(";")
 
     for i in range(len(pathList)):
         if not TransitionValid(pathList[i],nodes,symbols):
-            print("Error :",pathList[i],"is not a valid transition")   #############
+            print("Error :",pathList[i],"is not a valid path")   #############
             exit()
     
     pathList=RemoveDuplicates(pathList)
-        #gerer les a,s,s,s,s,s,s,a et supprimer les transition equivalentes ex: a,s,d,a et a,d,s,a  (les bibliotheques seraient utiles)
-
+        
     return pathList
     
 def TranslateInputsIntoMatrix(nodes,symbols,allPath):
 
     M = MatriceOfLists(len(nodes),len(symbols))
 
-    for i in range(len(pathList)):
+    for i in range(len(allPath)):
         pathList=allPath[i].split(",")
         indexStartingNode=index(pathList[0],nodes)
         indexFinalNode=index(pathList[-1],nodes)
               
         symbols=pathList[1:-1]
-        symbols=RemoveDuplicates(symbols)    #a voir avec comment on gere les doublon...
+        symbols=RemoveDuplicates(symbols)    
 
         for j in range(len(symbols)):
             x=index(symbols[j],symbols)
@@ -162,10 +184,9 @@ def CreateAEF():
     return aef 
 
 
-'''Test
+
 AEF = CreateAEF()
 
 print(AEF[0])
 print(AEF[1])
 print(AEF[2])
-'''
