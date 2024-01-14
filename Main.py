@@ -9,7 +9,7 @@ from AEF_operand import *
 from input_file import *
 from Language2 import *
 from prunedAEF import * 
-
+from Equivalent import * 
 
 def main_menu():
     print("\nFinite State Automaton Editor")
@@ -25,6 +25,9 @@ def main_menu():
     print("10. Create the mirror of an AEF")
     print("11. Create the Regular Expression of an AEF")
     print("12. Create the Pruned AEF of an AEF")
+    print("13. Multiply two AEFs")
+    print("14. Concatenate two AEFs")
+    print("15. Check if two AEFs are Equivalent")
     print("0. Exit")
     return input("Choose an option: ")
 
@@ -89,16 +92,60 @@ def main():
                 print("No AEF loaded.")
         elif choice == '11':
             if aef:
-                aef = regularExpression(aef)
+                regularExpression(aef)
                 print("Regular Expression created")
             else:
                 print('No AEF loaded')
         elif choice == '12':
             if aef:
-                aef = rendreTousLesEtatsReconnaissants(aef)
+                aef = makePruned(aef)
+                displayAef(aef)
                 print("Pruned AEF created")
             else:
                 print('No AEF loaded')
+        elif choice == '13':
+            if aef:
+                second_aef_name = input("Enter the name of the second AEF to multiply: ")
+                second_aef = readAefFile(second_aef_name)  # Assuming you have a function to read an AEF
+                if second_aef != -1:
+                    product_aef = mutliplyAef(aef, second_aef)
+                    print("Product AEF created.")
+                    displayAef(product_aef)
+                else:
+                    print("Failed to read second AEF file.")
+            else:
+                print("First AEF not loaded.")
+                
+                
+        elif choice == '14':
+            if aef:
+                second_aef_name = input("Enter the name of the second AEF to concatenate: ")
+                second_aef = readAefFile(second_aef_name)  # Assuming you have a function to read an AEF
+                if second_aef != -1:
+                    concateneted_Aef = concatenateAef(aef, second_aef)
+                    print("Product AEF created.")
+                    displayAef(concateneted_Aef)
+                else:
+                    print("Failed to read second AEF file.")
+            else:
+                print("First AEF not loaded.")
+                
+                
+        elif choice == '15':
+            if aef:
+                if aef:
+                    second_aef_name = input("Enter the name of the second AEF : ")
+                    second_aef = readAefFile(second_aef_name)  # Assuming you have a function to read an AEF
+                    if second_aef != -1:
+                        if isEquivalent(aef, second_aef):
+                            print("The AEFs are equivalent")
+                        else:
+                            print("The AEFs are not equivalent")
+                else:
+                    print("Failed to read second AEF file.")
+            else:
+                print("First AEF not loaded.")
+                
         else:
             print("Invalid option. Please try again.")
         
